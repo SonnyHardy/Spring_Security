@@ -6,6 +6,10 @@ import com.sonny.avis.entite.Utilisateur;
 import com.sonny.avis.entite.Validation;
 import com.sonny.avis.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +21,7 @@ import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
-public class UtilisateurService {
+public class UtilisateurService implements UserDetailsService {
 
     private UtilisateurRepository utilisateurRepository;
     private BCryptPasswordEncoder passwordEncoder;
@@ -57,5 +61,11 @@ public class UtilisateurService {
 
         utilisateur.setActif(true);
         this.utilisateurRepository.save(utilisateur);
+    }
+
+    @Override
+    public Utilisateur loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.utilisateurRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Aucun utilisateur ne correspond a cet identifiant"));
     }
 }

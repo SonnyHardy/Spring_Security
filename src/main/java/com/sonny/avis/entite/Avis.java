@@ -21,4 +21,7 @@ public class Avis {
 
     @Column
     private String statut;
+
+    @ManyToOne
+    private Utilisateur utilisateur;
 }
