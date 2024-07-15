@@ -36,6 +36,8 @@ public class ConfigurationSecurite {
                                                 .requestMatchers(HttpMethod.POST, "/activation").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/connexion").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/deconnexion").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/modifier-password").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/nouveau-password").permitAll()
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

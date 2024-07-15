@@ -36,12 +36,6 @@ public class UtilisateurController {
         log.info("Activation");
     }
 
-    @PostMapping(path = "deconnexion")
-    public void deconnexion() {
-        this.jwtService.deconnexion();
-        log.info("Deconnexion");
-    }
-
     @PostMapping(path = "connexion")
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
         final Authentication authenticate = this.authenticationManager.authenticate(
@@ -56,4 +50,23 @@ public class UtilisateurController {
 
         return null;
     }
+
+    @PostMapping(path = "deconnexion")
+    public void deconnexion() {
+        this.jwtService.deconnexion();
+        log.info("Deconnexion");
+    }
+
+    @PostMapping(path = "modifier-password")
+    public void modifierMotDePasse(@RequestBody Map<String, String > activation) {
+        this.utilisateurService.modifierMotDePasse(activation);
+        log.info("Modification du mot de passe");
+    }
+
+    @PostMapping(path = "nouveau-password")
+    public void nouveauMotDePasse(@RequestBody Map<String, String > activation) {
+        this.utilisateurService.nouveauMotDePasse(activation);
+        log.info("Nouveau du mot de passe");
+    }
+
 }

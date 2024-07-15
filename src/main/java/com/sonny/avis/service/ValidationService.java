@@ -4,7 +4,10 @@ import com.sonny.avis.entite.Utilisateur;
 import com.sonny.avis.entite.Validation;
 import com.sonny.avis.repository.ValidationRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -12,6 +15,8 @@ import java.util.Random;
 
 @Service
 @AllArgsConstructor
+@Slf4j
+@Transactional
 public class ValidationService {
 
     private ValidationRepository validationRepository;
@@ -34,7 +39,14 @@ public class ValidationService {
         this.notificationService.envoyerCode(validation);
     }
 
-    public Validation LireEnFonctionDuCode(String code) {
+    public Validation lireEnFonctionDuCode(String code) {
         return this.validationRepository.findByCode(code).orElseThrow(() -> new RuntimeException("Votre code est invalide"));
     }
+
+    @Scheduled(cron = "0 */1 * * * *")     // Apres chaque minute
+    public void nettoyerTable() {
+        log.info("Suppression des validations expirees a {}", Instant.now());
+        this.validationRepository.deleteAllByExpirationBefore(Instant.now());
+    }
+
 }

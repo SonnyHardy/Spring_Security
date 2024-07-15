@@ -6,8 +6,6 @@ import com.sonny.avis.entite.Utilisateur;
 import com.sonny.avis.entite.Validation;
 import com.sonny.avis.repository.UtilisateurRepository;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,7 +50,7 @@ public class UtilisateurService implements UserDetailsService {
     }
 
     public void activation(Map<String, String> activation) {
-        Validation validation = this.validationService.LireEnFonctionDuCode(activation.get("code"));
+        Validation validation = this.validationService.lireEnFonctionDuCode(activation.get("code"));
         if (Instant.now().isAfter(validation.getExpiration())){
             throw new RuntimeException("Votre code a expire");
         }
@@ -68,4 +66,22 @@ public class UtilisateurService implements UserDetailsService {
         return this.utilisateurRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Aucun utilisateur ne correspond a cet identifiant"));
     }
+
+    public void modifierMotDePasse(Map<String, String> parametres) {
+        Utilisateur utilisateur = this.loadUserByUsername(parametres.get("email"));
+        this.validationService.enregistrer(utilisateur);
+    }
+
+    public void nouveauMotDePasse(Map<String, String> parametres) {
+        Utilisateur utilisateur = this.loadUserByUsername(parametres.get("email"));
+        final Validation validation = validationService.lireEnFonctionDuCode(parametres.get("code"));
+        if (validation.getUtilisateur().getEmail().equals(utilisateur.getEmail())) {
+            String mdpCrypte = this.passwordEncoder.encode(parametres.get("password"));
+            utilisateur.setMdp(mdpCrypte);
+            this.utilisateurRepository.save(utilisateur);
+        }
+
+    }
+
+
 }
