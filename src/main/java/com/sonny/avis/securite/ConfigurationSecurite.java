@@ -35,6 +35,7 @@ public class ConfigurationSecurite {
                                         authorize.requestMatchers(HttpMethod.POST, "/inscription").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/activation").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/connexion").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/deconnexion").permitAll()
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

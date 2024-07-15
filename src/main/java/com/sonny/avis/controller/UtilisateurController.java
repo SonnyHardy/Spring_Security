@@ -36,6 +36,12 @@ public class UtilisateurController {
         log.info("Activation");
     }
 
+    @PostMapping(path = "deconnexion")
+    public void deconnexion() {
+        this.jwtService.deconnexion();
+        log.info("Deconnexion");
+    }
+
     @PostMapping(path = "connexion")
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO) {
         final Authentication authenticate = this.authenticationManager.authenticate(
