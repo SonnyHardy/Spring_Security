@@ -69,4 +69,10 @@ public class UtilisateurController {
         log.info("Nouveau du mot de passe");
     }
 
+    @PostMapping(path = "refresh-token")
+    public @ResponseBody Map<String, String> refreshToken(@RequestBody Map<String, String > refreshTokenRequest) {
+        log.info("Refresh Token");
+        return this.jwtService.refreshToken(refreshTokenRequest);
+    }
+
 }

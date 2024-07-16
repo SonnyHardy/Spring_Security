@@ -1,6 +1,7 @@
 package com.sonny.avis.securite;
 
 import com.sonny.avis.entite.Jwt;
+import com.sonny.avis.entite.RefreshToken;
 import com.sonny.avis.entite.Utilisateur;
 import com.sonny.avis.repository.JwtRepository;
 import com.sonny.avis.service.UtilisateurService;
@@ -16,10 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Key;
 import java.time.Instant;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,22 +39,33 @@ public class JwtService {
     public Map<String, String> generateToken(String username) {
         Utilisateur utilisateur = this.utilisateurService.loadUserByUsername(username);
         disableTokens(utilisateur);
-        final Map<String, String> jwtMap = this.generateJwt(utilisateur);
+        final Map<String, String> jwtMap = new HashMap<>(this.generateJwt(utilisateur));
 
+        // Creation du refresh token
+        RefreshToken refreshToken = RefreshToken.builder()
+                .valeur(UUID.randomUUID().toString())
+                .expire(false)
+                .creation(Instant.now())
+                .expiration(Instant.now().plusMillis(30 * 60* 1000))
+                .build();
+
+        // Sauvegarde du jwt dans la BD
         final Jwt jwt = Jwt.builder()
                 .valeur(jwtMap.get("bearer"))
                 .desactive(false)
                 .expire(false)
                 .utilisateur(utilisateur)
+                .refreshToken(refreshToken)
                 .build();
 
         this.jwtRepository.save(jwt);
+        jwtMap.put("refresh", refreshToken.getValeur());
         return jwtMap;
     }
 
     private Map<String, String> generateJwt(Utilisateur utilisateur) {
         final long currentTime = System.currentTimeMillis();
-        final long expirationTime = currentTime + (30 * 60 * 1000);
+        final long expirationTime = currentTime + (2 * 60 * 1000);
 
         final Map<String, Object> claims = Map.of(
                 "nom", utilisateur.getNom(),
@@ -128,5 +137,17 @@ public class JwtService {
         log.info("Suppression des token a {}", Instant.now());
         this.jwtRepository.deleteAllByExpireAndDesactive(true, true);
     }
+
+    public Map<String, String> refreshToken(Map<String, String> refreshTokenRequest) {
+        final Jwt jwt = this.jwtRepository.findByRefreshToken(refreshTokenRequest.get("refresh"))
+                .orElseThrow(() -> new RuntimeException("RefreshToken Invalide"));
+        if (jwt.getRefreshToken().isExpire() || jwt.getRefreshToken().getExpiration().isBefore(Instant.now())) {
+            throw new RuntimeException("RefreshToken a expire");
+        }
+        this.disableTokens(jwt.getUtilisateur());
+
+        return this.generateToken(jwt.getUtilisateur().getEmail());
+    }
+
 
 }

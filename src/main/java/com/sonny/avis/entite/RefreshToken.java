@@ -6,28 +6,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name = "jwt")
 @Builder
-public class Jwt {
+@Entity
+@Table(name = "refresh-token")
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String valeur;
-    private boolean desactive;
+    private Instant creation;
+    private Instant expiration;
     private boolean expire;
-
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private RefreshToken refreshToken;
-
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE})
-    @JoinColumn(name = "utilisateur")
-    private Utilisateur utilisateur;
 }
