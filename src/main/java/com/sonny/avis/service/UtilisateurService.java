@@ -1,6 +1,6 @@
 package com.sonny.avis.service;
 
-import com.sonny.avis.TypeDeRole;
+import com.sonny.avis.enums.TypeDeRole;
 import com.sonny.avis.entite.Role;
 import com.sonny.avis.entite.Utilisateur;
 import com.sonny.avis.entite.Validation;
@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -84,4 +85,7 @@ public class UtilisateurService implements UserDetailsService {
     }
 
 
+    public List<Utilisateur> listeUtilisateurs() {
+        return (List<Utilisateur>) this.utilisateurRepository.findAll();
+    }
 }

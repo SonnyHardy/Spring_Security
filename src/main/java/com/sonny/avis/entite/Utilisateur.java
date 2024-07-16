@@ -2,6 +2,7 @@ package com.sonny.avis.entite;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.processing.Pattern;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "utilisateur")
 public class Utilisateur implements UserDetails {
@@ -37,7 +39,8 @@ public class Utilisateur implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.getLibelle()));
+        //return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.getLibelle()));
+        return this.role.getLibelle().getAuthorities();
     }
 
     @Override

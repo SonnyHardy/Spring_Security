@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class AvisService {
@@ -17,5 +19,9 @@ public class AvisService {
         Utilisateur utilisateur = (Utilisateur) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         avis.setUtilisateur(utilisateur);
         this.avisRepository.save(avis);
+    }
+
+    public Iterable<Avis> listeAvis() {
+        return this.avisRepository.findAll();
     }
 }

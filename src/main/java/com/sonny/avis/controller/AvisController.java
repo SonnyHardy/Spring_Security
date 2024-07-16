@@ -21,4 +21,10 @@ public class AvisController {
         this.avisService.creer(avis);
         log.info("Avis cree");
     }
+
+    @GetMapping
+    public @ResponseBody Iterable<Avis> listeAvis() {
+        log.info("Liste des avis");
+        return this.avisService.listeAvis();
+    }
 }

@@ -1,0 +1,12 @@
+###
+// Inscription
+POST http://localhost:8080/api/inscription
+Content-Type: application/json
+
+{
+  "email": "accueil@gmail.com",
+  "mdp": "accueil",
+  "nom": "Accueil"
+}
+
+###
