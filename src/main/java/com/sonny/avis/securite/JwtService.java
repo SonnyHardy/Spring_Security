@@ -32,8 +32,8 @@ public class JwtService {
     private JwtRepository jwtRepository;
 
     public Jwt tokenByValue(String value) {
-        return this.jwtRepository.findByValeur(value)
-                .orElseThrow(() -> new RuntimeException("Token inconnu"));
+        return this.jwtRepository.findByValeur(value);
+                //.orElseThrow(() -> new RuntimeException("Token inconnu"));
     }
 
     public Map<String, String> generateToken(String username) {

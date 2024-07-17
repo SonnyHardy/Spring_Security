@@ -42,7 +42,7 @@ public class ConfigurationSecurite {
                                                 .requestMatchers(HttpMethod.POST, "/nouveau-password").permitAll()
                                                 .requestMatchers(HttpMethod.POST, "/refresh-token").permitAll()
 
-                                                .requestMatchers(HttpMethod.GET, "/avis").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
+                                                //.requestMatchers(HttpMethod.GET, "/avis").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER")
 
                                                 .anyRequest().authenticated()
                         )

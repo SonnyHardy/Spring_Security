@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 public interface JwtRepository extends CrudRepository<Jwt, Integer> {
 
-    Optional<Jwt> findByValeur(String value);
+    Jwt findByValeur(String value);
 
     @Query("FROM Jwt j where j.expire = :expire and j.desactive = :desactive and j.utilisateur.email = :email")
     Optional<Jwt> findUtilisateurValidToken(String email, boolean desactive, boolean expire);

@@ -13,8 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private UtilisateurService utilisateurService;
     private JwtService jwtService;
+    private HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -29,6 +32,8 @@ public class JwtFilter extends OncePerRequestFilter {
         Jwt tokenDansLaBDD = null;
         String username = null;
         boolean isTokenExpired = true;
+
+        try {
 
         // Bearer eyJhbGciOiJIUzI1NiJ9.eyJub20iOiJzb25ueSIsImVtYWlsIjoic29ubnlAZ21haWwuY29tIn0.gEkyJ_8kWUa8X3lhQ8ReG8ESCS1t5xsxyEfYuIEJjvA
         final String authorization = request.getHeader("Authorization");
@@ -51,5 +56,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
 
+        } catch (final Exception exception) {
+            this.handlerExceptionResolver.resolveException(request, response, null, exception);
+        }
+
     }
+
+
 }
